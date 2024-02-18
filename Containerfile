@@ -38,9 +38,9 @@ RUN git clone https://github.com/89luca89/distrobox.git --single-branch /tmp/dis
     rm -drf /tmp/distrobox
 
 # Distrobox base packages+tweaks
-COPY base-packages.txt / 
-COPY aur-packages.txt /
-RUN grep -v '^#' /base-packages.txt | xargs pacman -Syu --noconfirm --needed 
+COPY pacman-packages / 
+COPY aur-packages /
+RUN grep -v '^#' /pacman-packages | xargs pacman -Syu --noconfirm --needed 
 
 USER build
 WORKDIR /home/build
@@ -48,7 +48,7 @@ RUN git clone https://aur.archlinux.org/paru-bin.git --single-branch && \
      cd paru-bin && \
      makepkg -si --noconfirm && \
      rm -drf /home/build/paru-bin && \
-     grep -v '^#' /aur-packages.txt | xargs paru -Syu --noconfirm --needed
+     grep -v '^#' /aur-packages | xargs paru -Syu --noconfirm --needed
 
 USER root
 WORKDIR /
@@ -64,5 +64,5 @@ RUN sed -i 's@#en_US.UTF-8@en_US.UTF-8@g' /etc/locale.gen && \
     rm -rf \
         /tmp/* \
         /var/cache/pacman/pkg/* \
-        /base-packages.txt \
-        /aur-packages.txt 
+        /pacman-packages \
+        /aur-packages 
